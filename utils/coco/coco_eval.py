@@ -5,7 +5,7 @@ from collections import defaultdict
 import numpy as np
 import pycocotools.mask as mask_util
 import torch
-import torch._six
+#import torch._six
 from pycocotools.coco import COCO
 from pycocotools.cocoeval import COCOeval
 

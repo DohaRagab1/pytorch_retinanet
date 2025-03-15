@@ -70,7 +70,8 @@ class RetinaNetLosses(nn.Module):
             bbox_tgt = bbox_2_activ(bbox_tgt, anchors[bbox_mask])
             bb_loss = self.smooth_l1_loss(bbox_pred, bbox_tgt)
         else:
-            bb_loss = torch.tensor(0.0).to(bbox_pred.device)
+            #bb_loss = torch.tensor(0.0).to(bbox_pred.device)
+            bb_loss = torch.tensor(0.0, device=bbox_pred.device)
 
         # filtering mask to filter `ignore` classes from the class predicitons
         matches.add_(1)
@@ -93,13 +94,15 @@ class RetinaNetLosses(nn.Module):
         # to each of the targets , or else there will be index error, as
         # bboxes are predicted for background class as well
         # add 0 label for the background class
-        clas_tgt = torch.cat([clas_tgt.new_zeros(1).long(), clas_tgt])
+        #clas_tgt = torch.cat([clas_tgt.new_zeros(1).long(), clas_tgt])
+        clas_tgt = torch.cat([clas_tgt.new_zeros(1, dtype=torch.long), clas_tgt])
         clas_tgt = clas_tgt[matches[clas_mask]]
 
         # convert the integer lables into a one-hot vector and omit
         # the first column which corresponds to the 0th class as ,
         # no loss for the first(background) class
-        clas_tgt = F.one_hot(clas_tgt, num_classes=self.n_c + 1)[:, 1:]
+        #clas_tgt = F.one_hot(clas_tgt, num_classes=self.n_c + 1)[:, 1:]
+        clas_tgt = F.one_hot(clas_tgt.long(), num_classes=self.n_c + 1)[:, 1:]
         clas_tgt = clas_tgt.to(clas_pred.dtype)
         # classification loss
         clas_loss = self.focal_loss(clas_pred, clas_tgt)

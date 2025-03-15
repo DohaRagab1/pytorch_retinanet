@@ -87,21 +87,25 @@ def draw_bounding_box_on_image(image,
     draw = ImageDraw.Draw(image)
     (left, right, top, bottom) = (xmin, xmax, ymin, ymax)
 
-    draw.line(
-        [(left, top), (left, bottom), (right, bottom), (right, top), (left, top)],
-        width=thickness,
-        fill=color,
-    )
+    # draw.line(
+    #     [(left, top), (left, bottom), (right, bottom), (right, top), (left, top)],
+    #     width=thickness,
+    #     fill=color,
+    # )
+
+    draw.rectangle([(xmin, ymin), (xmax, ymax)], outline=color, width=thickness)
 
     try:
         font = ImageFont.truetype("arial.ttf", 24)
     except IOError:
         font = ImageFont.load_default()
 
+    # Compute text position
     # If the total height of the display strings added to the top of the bounding
     # box exceeds the top of the image, stack the strings below the bounding box
     # instead of above.
-    display_str_heights = [font.getsize(ds)[1] for ds in display_str_list]
+    display_str_heights = [font.getbbox(ds)[3] for ds in display_str_list]
+    #display_str_heights = [font.getsize(ds)[1] for ds in display_str_list]
     # Each display_str has a top and bottom margin of 0.05x.
     total_display_str_height = (1 + 2 * 0.05) * sum(display_str_heights)
 
@@ -112,7 +116,10 @@ def draw_bounding_box_on_image(image,
 
     # Reverse list and print from bottom to top.
     for display_str in display_str_list[::-1]:
-        text_width, text_height = font.getsize(display_str)
+        #text_width, text_height = font.getsize(display_str)
+        text_bbox = font.getbbox(display_str)
+        text_width = text_bbox[2] - text_bbox[0]
+        text_height = text_bbox[3] - text_bbox[1]
         margin = np.ceil(0.05 * text_height)
         draw.rectangle(
             [
@@ -160,18 +167,20 @@ def visualize_boxes_and_labels_on_image_array(image,
 
         **kwargs: argumnets to be passed down to the `draw_bounding_box_on_image` function .
     """
-    image = Image.fromarray(np.uint8(image * 255))
+    #image = Image.fromarray(np.uint8(image * 255))
+    image = Image.fromarray((image * 255).astype(np.uint8))
 
     # if scores is None boxes are groundthruth
     # set the scores to be 1 so they become 100 %
     if scores is None:
-        scores = np.ones_like(classes, dtype=np.int)
+        scores = np.ones_like(classes, dtype=np.int32)
 
     for i in range(len(boxes)):
         # Create a display string (and color) for every box location, group any boxes
         # that correspond to the same location.
-        display_str = str(label_map[classes[i]])
-        display_str = "{}: {}%".format(display_str, round(100 * scores[i]))
+        # display_str = str(label_map[classes[i]])
+        # display_str = "{}: {}%".format(display_str, round(100 * scores[i]))
+        display_str = f"{label_map[classes[i]]}: {round(100 * scores[i])}%"
         # generate a color for the class
         color = STANDARD_COLORS[classes[i] % len(STANDARD_COLORS)]
 

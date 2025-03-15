@@ -49,7 +49,7 @@ NUM_CLASSES: int = 90
 # This is the number of foreground classes.
 
 # The network used to compute the features for the model.
-# Should be one of ['resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet101', 'resnet152'].
+# Should be one of ['resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152'].
 BACKBONE: str = "resnet50"
 # Wether the backbone should be pretrained or not,. If true loads `pre-trained` weights
 PRETRAINED_BACKBONE: bool = True
