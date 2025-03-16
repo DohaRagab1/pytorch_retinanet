@@ -248,7 +248,8 @@ def loadRes(self, resFile):
 
     print('Loading and preparing results...')
     # tic = time.time()
-    if isinstance(resFile, torch._six.string_classes):
+    #if isinstance(resFile, torch._six.string_classes):
+    if isinstance(resFile, str):
         with open(resFile, "r") as f:
             anns = json.load(f)
         #anns = json.load(open(resFile))

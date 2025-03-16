@@ -62,7 +62,7 @@ def draw_bounding_box_on_image(image,
                                 ymax, 
                                 xmax, 
                                 color="red", 
-                                thickness=4, 
+                                thickness=6, 
                                 display_str_list=()):
     """
     Adds a bounding box to an image (numpy array).
