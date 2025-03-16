@@ -246,10 +246,12 @@ def loadRes(self, resFile):
     res = COCO()
     res.dataset["images"] = [img for img in self.dataset["images"]]
 
-    # print('Loading and preparing results...')
+    print('Loading and preparing results...')
     # tic = time.time()
     if isinstance(resFile, torch._six.string_classes):
-        anns = json.load(open(resFile))
+        with open(resFile, "r") as f:
+            anns = json.load(f)
+        #anns = json.load(open(resFile))
     elif type(resFile) == np.ndarray:
         anns = self.loadNumpyAnnotations(resFile)
     else:
@@ -293,7 +295,8 @@ def loadRes(self, resFile):
             s = ann["keypoints"]
             x = s[0::3]
             y = s[1::3]
-            x1, x2, y1, y2 = np.min(x), np.max(x), np.min(y), np.max(y)
+            #x1, x2, y1, y2 = np.min(x), np.max(x), np.min(y), np.max(y)
+            x1, x2, y1, y2 = x.min(), x.max(), y.min(), y.max()
             ann["area"] = (x2 - x1) * (y2 - y1)
             ann["id"] = id + 1
             ann["bbox"] = [x1, y1, x2 - x1, y2 - y1]
