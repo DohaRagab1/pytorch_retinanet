@@ -87,13 +87,13 @@ def draw_bounding_box_on_image(image,
     draw = ImageDraw.Draw(image)
     (left, right, top, bottom) = (xmin, xmax, ymin, ymax)
 
-    # draw.line(
-    #     [(left, top), (left, bottom), (right, bottom), (right, top), (left, top)],
-    #     width=thickness,
-    #     fill=color,
-    # )
+    draw.line(
+        [(left, top), (left, bottom), (right, bottom), (right, top), (left, top)],
+        width=thickness,
+        fill=color,
+    )
 
-    draw.rectangle([(xmin, ymin), (xmax, ymax)], outline=color, width=thickness)
+    #draw.rectangle([(xmin, ymin), (xmax, ymax)], outline=color, width=thickness)
 
     try:
         font = ImageFont.truetype("arial.ttf", 24)
@@ -104,7 +104,7 @@ def draw_bounding_box_on_image(image,
     # If the total height of the display strings added to the top of the bounding
     # box exceeds the top of the image, stack the strings below the bounding box
     # instead of above.
-    display_str_heights = [font.getbbox(ds)[3] for ds in display_str_list]
+    display_str_heights = [(font.getbbox(ds)[3] - font.getbbox(ds)[1]) for ds in display_str_list]
     #display_str_heights = [font.getsize(ds)[1] for ds in display_str_list]
     # Each display_str has a top and bottom margin of 0.05x.
     total_display_str_height = (1 + 2 * 0.05) * sum(display_str_heights)
