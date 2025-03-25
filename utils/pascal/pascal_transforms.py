@@ -8,17 +8,7 @@ def compose_transforms(transforms=None):
     if transforms is None:
         transforms = []
     transforms.append(A.ToFloat(max_value=255.0, always_apply=True),)
-
-    transforms.append(
-        A.Lambda(name="RoundBBoxes",
-        bbox= lambda bboxes: [
-            [round(min(max(coord, 0), 1), 4) for coord in bbox]
-            for bbox in bboxes
-        ],
-        )
-    )
-    #transforms.append(ToTensorV2(always_apply=True))
-    transforms.append(ToTensorV2())
+    transforms.append(ToTensorV2(always_apply=True))
 
     c = A.Compose(
         transforms,
